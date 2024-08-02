@@ -31,3 +31,33 @@ body {
     text-wrap: balance;
   }
 }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Full screen height */
+  background-color: #f7f9fc; /* Optional background */
+}
+
+.spinner {
+  height: 5vh;
+  width: 5vh;
+  border: 3px solid rgba(0, 174, 239, 0.2);
+  border-top-color: rgba(54, 24, 192, 0.8);
+  border-radius: 100%;
+  animation: rotation 0.6s infinite linear 0.25s;
+  opacity: 0;
+}
+
+@keyframes rotation {
+  from {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(359deg);
+  }
+}
+

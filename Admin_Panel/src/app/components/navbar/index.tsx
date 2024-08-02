@@ -9,6 +9,7 @@ const Navbar: FC = () => {
   const handleLogout = () => {
     // Implement logout logic here
     // For example, clear authentication tokens and redirect
+    localStorage.clear()
     router.push('/signin');
   };
 

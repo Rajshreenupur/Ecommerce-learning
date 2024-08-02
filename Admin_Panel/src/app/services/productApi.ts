@@ -3,7 +3,7 @@ const getToken = () => {
     return userInfoJSON;
   };
   
-  export function PostProduct(newProduct: any) {
+  export function PostProduct(formData: any) {
     let BaseUrl = "http://127.0.0.1:5000/products/create";
   
     return new Promise((resolve, reject) => {
@@ -15,10 +15,10 @@ const getToken = () => {
           Authorization: getToken() || "",
         },
         body: JSON.stringify({
-          category: newProduct.category,
-          productName: newProduct.name,
-          productPrice: newProduct.price,
-          productUrl: newProduct.image,
+          category: formData.category,
+          productName: formData.name,
+          productPrice: formData.price,
+          productUrl: formData.image,
         }),
       })
         .then((response) => {
@@ -42,6 +42,71 @@ const getToken = () => {
     return new Promise((resolve, reject) => {
       fetch(BaseUrl, {
         method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: getToken() || "",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((responseJson) => {
+          resolve(responseJson);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+  
+
+  export function EditProductDetails(editFormData:any,) {
+    const editProductID=editFormData.id
+    console.log(editProductID,"kkkkkkkkkkkkkkkkkkk")
+    let BaseUrl = `http://127.0.0.1:5000/products/update/${editProductID}`;
+  
+    return new Promise((resolve, reject) => {
+      fetch(BaseUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: getToken() || "",
+        },
+        body: JSON.stringify({
+          category: editFormData.category,
+          productName: editFormData.name,
+          productPrice: editFormData.price,
+          productUrl: editFormData.image,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((responseJson) => {
+          resolve(responseJson);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+  
+
+
+  export function DeleteProduct(productID:any) {
+    let BaseUrl = `http://127.0.0.1:5000/products/delete/${productID}`;
+  
+    return new Promise((resolve, reject) => {
+      fetch(BaseUrl, {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
