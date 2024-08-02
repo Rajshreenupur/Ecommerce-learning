@@ -4,13 +4,13 @@ import ProductCategory from '../models/productModel';
 
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
     const { category,productName,productPrice,productUrl } = req.body;
-  
     if (!category || !productName || !productPrice || !productUrl) {
       res.status(400).json({ message: 'Category,Product-Name,Product-Price and Product-URL are required' });
       return;
     }
   
     try {
+      
         const newProduct = new ProductCategory({ category,productName,productPrice,productUrl });
         await newProduct.save();    
       res.status(200).json({ message: 'Product created successful', newProduct });
