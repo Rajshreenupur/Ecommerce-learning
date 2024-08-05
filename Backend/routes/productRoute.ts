@@ -22,6 +22,6 @@ router.post('/create', authenticateUser, uploadStorage.single("file"), createPro
 router.get('/get/:id', authenticateUser, getProduct);
 router.put('/update/:id', authenticateUser, updateProduct);
 router.delete('/delete/:id', authenticateUser, deleteProduct);
-router.get('/getAllProduct', authenticateUser, getAllProduct);
+router.get('/getAllProduct', getAllProduct);
 
 export default router;

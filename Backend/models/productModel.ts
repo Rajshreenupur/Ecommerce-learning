@@ -6,6 +6,7 @@ interface IWomenCategory extends Document {
   productPrice: string;
   productUrl: string;
   category: string;
+  description:string
 }
 
 const ProductSchema: Schema = new Schema({
@@ -24,6 +25,10 @@ category:{
   productUrl: {
     type: String,
   },
+  description:{
+    type:String,
+    required:true
+  }
 });
 
 const ProductCategory = mongoose.model<IWomenCategory>('Product', ProductSchema);

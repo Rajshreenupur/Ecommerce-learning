@@ -2,16 +2,16 @@ import { Request, Response } from 'express';
 import ProductCategory from '../models/productModel';
 
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
-    const { category,productName,productPrice } = req.body;
+    const { category,productName,productPrice,description } = req.body;
     const productUrl = req.file ? `/uploads/${req.file.filename}` : '';
 // console.log(req.file,'------->>>>')
-    if (!category || !productName || !productPrice ) {
-      res.status(400).json({ message: 'Category,Product-Name and Product-Price  are required' });
+    if (!category || !productName || !productPrice || !description) {
+      res.status(400).json({ message: 'Category,Product-Name,description and Product-Price  are required' });
       return;
     }
 
     try {
-        const newProduct = new ProductCategory({ category,productName,productPrice,productUrl });
+        const newProduct = new ProductCategory({ category,productName,productPrice,productUrl,description});
         await newProduct.save();    
       res.status(200).json({ message: 'Product created successful', newProduct });
     } catch (error) {
