@@ -4,6 +4,9 @@ import adminRoutes from './routes/adminRoute';
 import productRoutes from './routes/productRoute';
 const cors = require('cors');
 
+import path from 'path';
+
+
 
 const app: Application = express();
 
@@ -11,7 +14,9 @@ const app: Application = express();
 app.use(express.json());
 
 app.use(cors());
-
+app.use(express.static(path.join(__dirname, 'uploads')));
+console.log(__dirname)
+app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
 // Use admin routes
 app.use('/admin', adminRoutes);
 app.use('/products', productRoutes);

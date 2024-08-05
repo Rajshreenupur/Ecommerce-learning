@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
 import ProductCategory from '../models/productModel';
 
-
 export const createProduct = async (req: Request, res: Response): Promise<void> => {
-    const { category,productName,productPrice,productUrl } = req.body;
-    if (!category || !productName || !productPrice || !productUrl) {
-      res.status(400).json({ message: 'Category,Product-Name,Product-Price and Product-URL are required' });
+    const { category,productName,productPrice } = req.body;
+    const productUrl = req.file ? `/uploads/${req.file.filename}` : '';
+// console.log(req.file,'------->>>>')
+    if (!category || !productName || !productPrice ) {
+      res.status(400).json({ message: 'Category,Product-Name and Product-Price  are required' });
       return;
     }
-  
+
     try {
-      
         const newProduct = new ProductCategory({ category,productName,productPrice,productUrl });
         await newProduct.save();    
       res.status(200).json({ message: 'Product created successful', newProduct });
@@ -18,6 +18,7 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
       res.status(500).json({ message: 'Error creating product', error });
     }
   };
+  
 
 
   export const getProduct = async (req: Request, res: Response): Promise<void> => {

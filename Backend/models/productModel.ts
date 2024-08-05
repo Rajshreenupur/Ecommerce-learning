@@ -23,7 +23,6 @@ category:{
   },
   productUrl: {
     type: String,
-    required: true,
   },
 });
 
