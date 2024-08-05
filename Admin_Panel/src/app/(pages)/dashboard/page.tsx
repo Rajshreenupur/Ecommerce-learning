@@ -14,6 +14,7 @@ const Dashboard: FC = () => {
     name: "",
     price: "",
     image: "",
+    description:"",
     category: "Mens",
   });
   const [products, setProducts] = useState<any>([]);
@@ -23,6 +24,7 @@ const Dashboard: FC = () => {
     name: "",
     price: "",
     image: "",
+    description:"",
     category: "Mens",
     id: "",
   });
@@ -53,6 +55,7 @@ const Dashboard: FC = () => {
       name: "",
       price: "",
       image: "",
+      description:"",
       category: "Mens",
     });
   };
@@ -76,6 +79,7 @@ const Dashboard: FC = () => {
       price: editForm?.productPrice,
       image: editForm?.productUrl,
       category: editForm.category,
+      description:editForm.description,
       id: editForm?._id,
     });
   };
@@ -125,6 +129,14 @@ const Dashboard: FC = () => {
                 className="p-2 border border-gray-300 rounded mr-2"
                 onChange={handleChange}
               />
+               <input
+                type="text"
+                name="description"
+                placeholder="Product description"
+                value={formData.description}
+                className="p-2 border border-gray-300 rounded mr-2"
+                onChange={handleChange}
+              />
               <input
                 type="file"
                 name="image"
@@ -168,6 +180,14 @@ const Dashboard: FC = () => {
                     name="price"
                     placeholder="Product price"
                     value={editFormData.price}
+                    className="p-2 border border-gray-300 rounded mr-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="text"
+                    name="description"
+                    placeholder="Product description"
+                    value={editFormData.description}
                     className="p-2 border border-gray-300 rounded mr-2"
                     onChange={handleChange}
                   />
@@ -224,7 +244,11 @@ const Dashboard: FC = () => {
                         {product?.productPrice}
                       </div>
                       <div className="text-gray-600">{product?.category}</div>
+                      <div className="text-gray-600">
+                        {product?.description}
+                      </div>
                     </div>
+                    
                     <button
                       className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
                       onClick={() => handleEdit(product?._id)}

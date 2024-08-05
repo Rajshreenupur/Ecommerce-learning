@@ -11,6 +11,7 @@ const getToken = () => {
     data.append('productName', formData.name);
     data.append('productPrice', formData.price);
     data.append('file', formData.image); 
+    data.append('description',formData.description)
     return new Promise((resolve, reject) => {
       fetch(BaseUrl, {
         method: "POST",
