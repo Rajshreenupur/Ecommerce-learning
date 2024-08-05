@@ -4,22 +4,22 @@ const getToken = () => {
   };
   
   export function PostProduct(formData: any) {
+    console.log(formData,"<>>><<LLLLLLLLLLLLLLLLLLLLLLL")
     let BaseUrl = "http://127.0.0.1:5000/products/create";
-  
+    const data = new FormData();
+    data.append('category', formData.category);
+    data.append('productName', formData.name);
+    data.append('productPrice', formData.price);
+    data.append('file', formData.image); 
     return new Promise((resolve, reject) => {
       fetch(BaseUrl, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: getToken() || "",
         },
-        body: JSON.stringify({
-          category: formData.category,
-          productName: formData.name,
-          productPrice: formData.price,
-          productUrl: formData.image,
-        }),
+        body: data
+
       })
         .then((response) => {
           if (!response.ok) {
@@ -67,7 +67,9 @@ const getToken = () => {
   export function EditProductDetails(editFormData:any,) {
     const editProductID=editFormData.id
     console.log(editProductID,"kkkkkkkkkkkkkkkkkkk")
+    
     let BaseUrl = `http://127.0.0.1:5000/products/update/${editProductID}`;
+
   
     return new Promise((resolve, reject) => {
       fetch(BaseUrl, {
@@ -81,7 +83,7 @@ const getToken = () => {
           category: editFormData.category,
           productName: editFormData.name,
           productPrice: editFormData.price,
-          productUrl: editFormData.image,
+          // productUrl: editFormData.image,
         }),
       })
         .then((response) => {

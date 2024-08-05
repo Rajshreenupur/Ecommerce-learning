@@ -24,23 +24,30 @@ const Dashboard: FC = () => {
     price: "",
     image: "",
     category: "Mens",
-    id:""
+    id: "",
   });
 
   const handleChange = (e: any) => {
-    if(editMode){
+    if (editMode) {
       setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
-
-    }else{
+    } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
-
     }
-
+  };
+  const handlePhoto = (e: any) => {
+    const file = e.target.files?.[0] || null;
+    // if (editMode) {
+    //   setEditFormData((prevState) => ({ ...prevState, image: file }));
+    // } else {
+    setFormData((prevState) => ({ ...prevState, image: file }));
+    // }
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+
     setProducts([...products, formData]);
+
     PostProduct(formData);
     setFormData({
       name: "",
@@ -69,18 +76,18 @@ const Dashboard: FC = () => {
       price: editForm?.productPrice,
       image: editForm?.productUrl,
       category: editForm.category,
-      id:editForm?._id
-    })
+      id: editForm?._id,
+    });
   };
 
-  const updateProduct=(e:any)=>{
+  const updateProduct = (e: any) => {
     e.preventDefault();
-    EditProductDetails(editFormData)
-    setEditMode(false)
-  }
+    EditProductDetails(editFormData);
+    setEditMode(false);
+  };
 
   const handleDelete = (productID: any) => {
-   DeleteProduct(productID);
+    DeleteProduct(productID);
   };
 
   return (
@@ -97,7 +104,7 @@ const Dashboard: FC = () => {
           </ul>
         </div>
         {loading ? (
-          <Loader />        
+          <Loader />
         ) : (
           <div className="flex-1 p-8">
             <h1 className="text-2xl font-bold mb-6">Product Dashboard</h1>
@@ -119,12 +126,11 @@ const Dashboard: FC = () => {
                 onChange={handleChange}
               />
               <input
-                type="text"
+                type="file"
                 name="image"
-                value={formData.image}
                 placeholder="Product image URL"
                 className="p-2 border border-gray-300 rounded mr-2"
-                onChange={handleChange}
+                onChange={handlePhoto}
               />
               <select
                 className="p-2 border border-gray-300 rounded mr-2"
@@ -144,7 +150,6 @@ const Dashboard: FC = () => {
               </button>
             </div>
             {/* {JSON.stringify(products)} */}
-
             {editMode ? (
               // Edit Form
               <div className="mb-6">
@@ -167,12 +172,11 @@ const Dashboard: FC = () => {
                     onChange={handleChange}
                   />
                   <input
-                    type="text"
+                    type="file"
                     name="image"
-                    value={editFormData.image}
                     placeholder="Product image URL"
                     className="p-2 border border-gray-300 rounded mr-2"
-                    onChange={handleChange}
+                    onChange={handlePhoto}
                   />
                   <select
                     className="p-2 border border-gray-300 rounded mr-2"
@@ -208,7 +212,7 @@ const Dashboard: FC = () => {
                     className="flex items-center space-x-4 p-4 bg-white rounded shadow-md"
                   >
                     <img
-                      src="https://via.placeholder.com/150"
+                      src={`http://localhost:5000${product?.productUrl}`}
                       alt="Sample Product"
                       className="w-32 h-24 object-cover rounded mr-4"
                     />
