@@ -1,19 +1,13 @@
-// models/admin.model.ts
 import mongoose, { Document, Schema } from 'mongoose';
+import SizeQuantity, { ISizeQuantity } from './sizeQuantityModel';
 
-interface IWomenCategory extends Document {
-  productName: string;
-  productPrice: string;
-  productUrl: string;
-  category: string;
-  description:string
-}
-
+// Define Product Schema
 const ProductSchema: Schema = new Schema({
-category:{
+  category: {
     type: String,
     required: true,
-},
+    enum: ['Mens', 'Womens', 'Kids'],
+  },
   productName: {
     type: String,
     required: true,
@@ -25,12 +19,26 @@ category:{
   productUrl: {
     type: String,
   },
-  description:{
-    type:String,
-    required:true
-  }
+  description: {
+    type: String,
+    required: true,
+  },
+  sizesQuantities: [SizeQuantity.schema]
 });
 
+// Interface for Product
+interface IWomenCategory extends Document {
+  productName: string;
+  productPrice: string;
+  productUrl: string;
+  category: string;
+  description: string;
+  sizesQuantities: ISizeQuantity[]; 
+
+}
+
+// Create and export the model
 const ProductCategory = mongoose.model<IWomenCategory>('Product', ProductSchema);
 
 export default ProductCategory;
+export { IWomenCategory };

@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Navbar from "@/app/components/navbar";
-import WomenWear from "./womenswear/page";
 
 interface Product {
   id: number;
@@ -29,7 +27,6 @@ const WomenWears: React.FC = () => {
         }
         const data = await response.json();
 // console.log(data,"<<<<<<<<<<<<<<<<")
-        // Assuming your API returns a list of products with a category field
         const WomensProducts = data.filter(
           (product: Product) => product.category === "Womens"
         );

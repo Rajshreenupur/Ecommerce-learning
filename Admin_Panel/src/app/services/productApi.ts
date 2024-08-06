@@ -11,7 +11,8 @@ const getToken = () => {
     data.append('productName', formData.name);
     data.append('productPrice', formData.price);
     data.append('file', formData.image); 
-    data.append('description',formData.description)
+    data.append('description',formData.description),
+    data.append('sizesQuantities',JSON.stringify(formData.sizeQuatities))
     return new Promise((resolve, reject) => {
       fetch(BaseUrl, {
         method: "POST",
@@ -20,7 +21,6 @@ const getToken = () => {
           Authorization: getToken() || "",
         },
         body: data
-
       })
         .then((response) => {
           if (!response.ok) {
@@ -111,7 +111,6 @@ const getToken = () => {
       fetch(BaseUrl, {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: getToken() || "",
         },
