@@ -4,9 +4,21 @@ import Image from "next/image";
 import Navbar from "../components/navbar";
 
 const categories = [
-  { title: "Men’s Wear", href: "/menswear", src: "https://via.placeholder.com/400x300?text=Men's+Wear" },
-  { title: "Women’s Wear", href: "/womenswear", src: "https://via.placeholder.com/400x300?text=Women's+Wear" },
-  { title: "Kids’ Wear", href: "/kidswear", src: "https://via.placeholder.com/400x300?text=Kids'+Wear" }
+  {
+    title: "Men’s Wear",
+    href: "/menswear",
+    src: "https://assets.vogue.com/photos/649ac5469a401f430c2a245c/master/w_2560%2Cc_limit/00-story%2520(1).jpg",
+  },
+  {
+    title: "Women’s Wear",
+    href: "/womenswear",
+    src: "https://asset20.ckassets.com/blog/wp-content/uploads/sites/5/2021/12/Womens-Clothing.jpg",
+  },
+  {
+    title: "Kids’ Wear",
+    href: "/kidswear",
+    src: "https://st2.depositphotos.com/3591429/11644/i/450/depositphotos_116441598-stock-photo-kids-laughing-and-have-fun.jpg",
+  },
 ];
 
 const Home: React.FC = () => {
@@ -26,12 +38,11 @@ const Home: React.FC = () => {
           {categories.map((category, index) => (
             <div key={index} className="vertical-slider-item">
               <Link href={category.href}>
-                <div className="relative w-full h-64">
-                  <Image
-                    // src={category.src}
+                <div className="relative w-full h-64 overflow-hidden">
+                  <img
+                    src={category.src}
                     alt={category.title}
-                    fill
-                    className="object-cover"
+                    className="absolute inset-0 object-cover w-full h-full"
                   />
                 </div>
               </Link>

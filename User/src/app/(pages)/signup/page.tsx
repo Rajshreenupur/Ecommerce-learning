@@ -1,10 +1,39 @@
-// pages/signup.tsx
-
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { UserSignUp } from '@/app/services/authApi';
 
 const SignUp: React.FC = () => {
+  
+  const router =useRouter();
+  const [signUpData , setSignUpData] = useState({
+    username : "",
+    email:"",
+    password:""
+  })
+
+  const handleChange =(e:any)=>{
+    setSignUpData({
+      ...signUpData,
+      [e.target.name] : e.target.value
+    })
+
+  }
+
+  const handleSignUpSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const response = await UserSignUp(signUpData);
+      console.log("Signup successful:", response);
+        router.push("/signin");
+      
+    } catch (error) {
+      console.error("Signup failed:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Head>
@@ -25,6 +54,8 @@ const SignUp: React.FC = () => {
               type="text"
               name="username"
               id="username"
+              value={signUpData.username}
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your username"
             />
@@ -41,6 +72,8 @@ const SignUp: React.FC = () => {
               type="email"
               name="email"
               id="email"
+              value={signUpData.email}
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your email"
             />
@@ -57,24 +90,10 @@ const SignUp: React.FC = () => {
               type="password"
               name="password"
               id="password"
+              value={signUpData.password}
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your password"
-            />
-          </div>
-          
-          <div className="mb-6">
-            <label
-              htmlFor="confirm-password"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirm-password"
-              id="confirm-password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Confirm your password"
             />
           </div>
           
@@ -82,6 +101,7 @@ const SignUp: React.FC = () => {
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              onClick={handleSignUpSubmit}
             >
               Sign Up
             </button>

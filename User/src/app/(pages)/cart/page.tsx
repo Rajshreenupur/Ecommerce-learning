@@ -1,46 +1,67 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/app/components/navbar";
+import { deleteCartItem, getAllProduct } from "@/app/services/productsApi";
 
-// Sample cart data
-const sampleCartItems = [
-  {
-    id: 1,
-    name: "Men's T-Shirt",
-    price: 20.00,
-    quantity: 2,
-    image: "https://via.placeholder.com/150?text=Men's+T-Shirt"
-  },
-  {
-    id: 2,
-    name: "Women's Dress",
-    price: 40.00,
-    quantity: 1,
-    image: "https://via.placeholder.com/150?text=Women's+Dress"
-  }
-];
+interface Product {
+  _id: string;
+  productId: {
+    _id: string;
+    category: string;
+    productName: string;
+    productPrice: string;
+    productUrl: string;
+    sizesQuantities: any[];
+  };
+  quantity: number;
+}
 
 const Cart: React.FC = () => {
-  const [cartItems, setCartItems] = useState(sampleCartItems);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await getAllProduct();
+        setCartItems(response);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch products. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Calculate total price
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+    return cartItems
+      .reduce(
+        (total, item) =>
+          total + parseFloat(item.productId.productPrice) * item.quantity,
+        0
+      )
+      .toFixed(2);
   };
 
   // Handle quantity change
-  const handleQuantityChange = (id: number, newQuantity: number) => {
-    setCartItems(cartItems.map(item =>
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
+  const handleQuantityChange = (id: string, newQuantity: number) => {
+    setCartItems(
+      cartItems.map((item) =>
+        item._id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
   };
 
   // Handle item removal
-  const handleRemoveItem = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const handleRemoveItem = (id: string) => {
+    deleteCartItem(id);
   };
 
   return (
@@ -55,37 +76,59 @@ const Cart: React.FC = () => {
       <main className="container mx-auto px-4 py-8 flex-1">
         <div className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-4">Items in your cart</h2>
-          {cartItems.length === 0 ? (
+          {loading ? (
+            <p className="text-center text-lg">Loading...</p>
+          ) : error ? (
+            <p className="text-center text-red-500">{error}</p>
+          ) : cartItems.length === 0 ? (
             <p className="text-center text-lg">Your cart is empty.</p>
           ) : (
             <div>
-              {cartItems.map(item => (
-                <div key={item.id} className="flex items-center mb-6 border-b pb-4">
+              {cartItems.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex items-center mb-6 border-b pb-4"
+                >
                   <div className="w-1/4">
-                    <Image
-                    //   src={item.image}
-                      alt={item.name}
+                    <img
+                      src={`http://localhost:5000${item.productId.productUrl}`}
+                      alt={item.productId.productName}
                       width={150}
                       height={150}
                       className="object-cover"
                     />
                   </div>
                   <div className="w-3/4 pl-4">
-                    <h3 className="text-xl font-bold">{item.name}</h3>
-                    <p className="text-gray-700">Price: ${item.price.toFixed(2)}</p>
+                    <h3 className="text-xl font-bold">
+                      {item.productId.productName}
+                    </h3>
+                    <p className="text-gray-700">
+                      Price: $
+                      {parseFloat(item.productId.productPrice).toFixed(2)}
+                    </p>
                     <div className="flex items-center mt-2">
                       <label className="mr-2">Quantity:</label>
                       <input
                         type="number"
                         min="1"
                         value={item.quantity}
-                        onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            item._id,
+                            parseInt(e.target.value)
+                          )
+                        }
                         className="border rounded p-1 w-16"
                       />
                     </div>
-                    <p className="mt-2 font-bold">Total: ${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="mt-2 font-bold">
+                      Total: $
+                      {(
+                        parseFloat(item.productId.productPrice) * item.quantity
+                      ).toFixed(2)}
+                    </p>
                     <button
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => handleRemoveItem(item._id)}
                       className="text-red-500 mt-2 underline"
                     >
                       Remove
@@ -95,9 +138,11 @@ const Cart: React.FC = () => {
               ))}
             </div>
           )}
-          {cartItems.length > 0 && (
+          {cartItems.length > 0 && !loading && (
             <div className="flex justify-between items-center mt-6">
-              <p className="text-xl font-bold">Grand Total: ${calculateTotal()}</p>
+              <p className="text-xl font-bold">
+                Grand Total: ${calculateTotal()}
+              </p>
               <Link
                 href="/checkout"
                 className="bg-blue-500 text-white px-4 py-2 rounded"

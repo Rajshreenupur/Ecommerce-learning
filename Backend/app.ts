@@ -1,6 +1,7 @@
 
 import express, { Application, Request, Response } from 'express';
 import adminRoutes from './routes/adminRoute';
+import userRoutes from './routes/userRoute';
 import productRoutes from './routes/productRoute';
 const cors = require('cors');
 
@@ -20,6 +21,7 @@ app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
 // Use admin routes
 app.use('/admin', adminRoutes);
 app.use('/products', productRoutes);
+app.use('/user',userRoutes);
 
 
 // Routes

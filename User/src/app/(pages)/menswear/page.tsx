@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Navbar from "@/app/components/navbar";
+// import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { AddCartItem } from "@/app/services/productsApi";
 
 interface Product {
   id: number;
@@ -28,11 +31,9 @@ const MensWear: React.FC = () => {
         }
         const data = await response.json();
 // console.log(data,"<<<<<<<<<<<<<<<<")
-        // Assuming your API returns a list of products with a category field
         const mensProducts = data.filter(
           (product: Product) => product.category === "Mens"
         );
-
         setProducts(mensProducts);
         setLoading(false);
       } catch (err) {
@@ -43,6 +44,15 @@ const MensWear: React.FC = () => {
 
     fetchProducts();
   }, []);
+
+  const router =useRouter();
+
+  const addToCard = (productID:any)=>{
+    // console.log(productID,"--------------------")
+    AddCartItem(productID)
+    router.push('/cart')
+
+  }
 
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
@@ -63,9 +73,9 @@ const MensWear: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {products.map((product:any) => (
             <div
-              key={product.id}
+              key={product._id}
               className="bg-white shadow-md rounded-lg overflow-hidden"
             >
               <img
@@ -81,7 +91,9 @@ const MensWear: React.FC = () => {
                   {product.description}
                 </p>
                 <p className="text-xl font-bold">{product.price}</p>
-                <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+                <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                onClick={() => {addToCard(product._id)}}
+                >
                   Add to Cart
                 </button>
               </div>

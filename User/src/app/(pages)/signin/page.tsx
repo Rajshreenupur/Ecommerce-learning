@@ -1,10 +1,39 @@
-// pages/signin.tsx
-
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { UserSignIn } from "@/app/services/authApi";
 
 const SignIn: React.FC = () => {
+  const [signInData,setSignInData] =useState({
+    email:"",
+    password:""
+  })
+  const router = useRouter();
+
+  const handleChange =(e:any)=>{
+    setSignInData({
+      ...signInData,
+      [e.target.name]:e.target.value
+    })
+
+  }
+  const handleSignInSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const response = await UserSignIn(signInData);
+      console.log("Login successful:", response);
+      if(!response.error){
+        localStorage.setItem("token", response?.token);
+        router.push("/");
+      }
+     
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Head>
@@ -13,20 +42,20 @@ const SignIn: React.FC = () => {
       <div className="w-full max-w-md">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
-
           <div className="mb-4">
             <label
-              htmlFor="username"
+              htmlFor="email"
               className="block text-gray-700 text-sm font-bold mb-2"
             >
-              Username
+              Email
             </label>
             <input
               type="text"
-              name="username"
-              id="username"
+              name="email"
+              id="email"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Enter your username"
+              placeholder="Enter your Email"
             />
           </div>
 
@@ -41,6 +70,7 @@ const SignIn: React.FC = () => {
               type="password"
               name="password"
               id="password"
+              onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter your password"
             />
@@ -48,23 +78,17 @@ const SignIn: React.FC = () => {
 
           <div className="flex items-center justify-between">
             <button
-              // type="submit"
+              type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              onClick={handleSignInSubmit}
             >
-              <Link
-                href="/"
-              >
-                Sign In
-              </Link>
+              <Link href="/">Sign In</Link>
             </button>
           </div>
 
           <p className="text-center text-gray-600 text-sm mt-4">
             Dont have an account?
-            <Link
-              href="/signup"
-              className="text-blue-500 hover:text-blue-700"
-            >
+            <Link href="/signup" className="text-blue-500 hover:text-blue-700">
               Sign Up
             </Link>
           </p>

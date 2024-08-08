@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Navbar from "@/app/components/navbar";
+import { useRouter } from "next/navigation";
+import { AddCartItem } from "@/app/services/productsApi";
 
 interface Product {
   id: number;
@@ -8,7 +10,7 @@ interface Product {
   price: string;
   image: string;
   category: string;
-  description:string;
+  description: string;
 }
 
 const WomenWears: React.FC = () => {
@@ -26,7 +28,7 @@ const WomenWears: React.FC = () => {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-// console.log(data,"<<<<<<<<<<<<<<<<")
+        // console.log(data,"<<<<<<<<<<<<<<<<")
         const WomensProducts = data.filter(
           (product: Product) => product.category === "Womens"
         );
@@ -42,6 +44,14 @@ const WomenWears: React.FC = () => {
     fetchProducts();
   }, []);
 
+  const router = useRouter();
+
+  const addToCard = (productID:any)=>{
+    // console.log(productID,"--------------------")
+    AddCartItem(productID)
+    router.push('/cart')
+
+  }
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
   }
@@ -61,9 +71,9 @@ const WomenWears: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {products.map((product:any) => (
             <div
-              key={product.id}
+              key={product._id}
               className="bg-white shadow-md rounded-lg overflow-hidden"
             >
               <img
@@ -75,11 +85,12 @@ const WomenWears: React.FC = () => {
               />
               <div className="p-4">
                 <h2 className="text-xl font-bold mb-2">{product.name}</h2>
-                <p className="text-gray-700 mb-4">
-                  {product.description}
-                </p>
+                <p className="text-gray-700 mb-4">{product.description}</p>
                 <p className="text-xl font-bold">{product.price}</p>
-                <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+                <button
+                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                  onClick={() => {addToCard(product._id)}}
+                  >
                   Add to Cart
                 </button>
               </div>
