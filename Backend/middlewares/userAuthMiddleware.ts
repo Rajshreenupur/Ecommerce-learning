@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const USER_JWT_SECRET = process.env.USER_JWT_SECRET;
-// console.log(USER_JWT_SECRET,"njbhgvfcd")
 if (!USER_JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined in environment variables");
 }
@@ -16,7 +15,6 @@ export const authenticateUsers = (
   next: NextFunction
 ) => {
   const token = req.headers.authorization;
-  // console.log(token,"<<<<<<<<<<<<")
   if (!token) {
     return res.status(401).json({ error: "Unauthorized: Missing token" });
   }

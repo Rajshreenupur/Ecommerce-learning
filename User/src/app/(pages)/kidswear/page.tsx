@@ -29,7 +29,6 @@ const KidsWear: React.FC = () => {
         }
         const data = await response.json();
 
-        // Filter products by category "kids"
         const kidsProducts = data.filter(
           (product: Product) => product.category === "Kids"
         );
@@ -47,7 +46,6 @@ const KidsWear: React.FC = () => {
 
   const router = useRouter();
   const addToCard = (productID:any)=>{
-    // console.log(productID,"--------------------")
     AddCartItem(productID)
     router.push('/cart')
 

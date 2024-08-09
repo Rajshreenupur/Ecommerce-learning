@@ -6,7 +6,6 @@ const getToken = () => {
 };
 
 export function AddCartItem(productID: any) {
-    console.log(productID, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<,");
     const config = {
         headers: { Authorization: getToken() }
     };

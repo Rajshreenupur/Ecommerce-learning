@@ -55,7 +55,6 @@ const Dashboard: FC = () => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     PostProduct(formData);
-    console.log(formData,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     setFormData({
       name: "",
       price: "",
@@ -103,7 +102,6 @@ const Dashboard: FC = () => {
       ...prevFormData,
       sizeQuatities: data,
     }));
-    // console.log(data)
   };
   
 

@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const SALT_ROUNDS = 10;
-// const SECRET_KEY ="kjhgfcdxsxfcgvbhjkmmjnhgfvcdxfcgvbhjkmnhjbcfdxcfgvbhjnbhdxzsxcfgvbh";
 
 export const signUpAdmin = async (req: Request, res: Response): Promise<void> => {
   const { username,email, password } = req.body;
@@ -18,7 +17,6 @@ export const signUpAdmin = async (req: Request, res: Response): Promise<void> =>
   }
 
   try {
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
     const newAdmin = new Admin({ username,email, password: hashedPassword });
@@ -47,7 +45,6 @@ export const signInAdmin = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    // Compare the provided password with the hashed password
     const isMatch = await bcrypt.compare(password, admin.password);
 
     if (!isMatch) {

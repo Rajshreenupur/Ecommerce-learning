@@ -1,4 +1,3 @@
-// routes/admin.routes.ts
 import { Router } from 'express';
 import { signInUser, signUpUser } from '../controllers/userController';
 import { AddUserCart, deleteCartItem, GetAllCartItem } from '../controllers/userCartController';

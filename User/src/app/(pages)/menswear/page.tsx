@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Navbar from "@/app/components/navbar";
-// import { useRouter } from "next/router";
 import { useRouter } from "next/navigation";
 import { AddCartItem } from "@/app/services/productsApi";
 
@@ -30,7 +28,6 @@ const MensWear: React.FC = () => {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-// console.log(data,"<<<<<<<<<<<<<<<<")
         const mensProducts = data.filter(
           (product: Product) => product.category === "Mens"
         );
@@ -48,7 +45,6 @@ const MensWear: React.FC = () => {
   const router =useRouter();
 
   const addToCard = (productID:any)=>{
-    // console.log(productID,"--------------------")
     AddCartItem(productID)
     router.push('/cart')
 

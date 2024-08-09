@@ -23,7 +23,7 @@ const SignIn: React.FC = () => {
     e.preventDefault();
     try {
       const response = await UserSignIn(signInData);
-      console.log("Login successful:", response);
+      // console.log("Login successful:", response);
       if(!response.error){
         localStorage.setItem("token", response?.token);
         router.push("/");

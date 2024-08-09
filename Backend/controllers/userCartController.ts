@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import mongoose from 'mongoose'; // Import mongoose here
+import mongoose from 'mongoose'; 
 import UserCart from "../models/userCartModel";
 import ProductCategory from "../models/productModel";
 
-// Add or Update a Cart Item
 export const AddUserCart = async (req: any, res: Response): Promise<void> => {
   const { productId, quantity } = req.body;
   const userId = req.user?._id;
@@ -49,7 +48,6 @@ export const AddUserCart = async (req: any, res: Response): Promise<void> => {
   }
 };
 
-// Get All Cart Items for a User
 export const GetAllCartItem = async (req: any, res: Response): Promise<void> => {
   const userId = req.user?._id;
 
@@ -72,7 +70,6 @@ export const GetAllCartItem = async (req: any, res: Response): Promise<void> => 
   }
 };
 
-// Delete a Cart Item by Product ID
 export const deleteCartItem = async (req: any, res: any): Promise<void> => {
   const userId = req.user?._id;
   const productId = req.params.id; 

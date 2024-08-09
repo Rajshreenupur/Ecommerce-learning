@@ -1,7 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import SizeQuantity, { ISizeQuantity } from './sizeQuantityModel';
 
-// Define Product Schema
 const ProductSchema: Schema = new Schema({
   category: {
     type: String,
@@ -26,7 +25,6 @@ const ProductSchema: Schema = new Schema({
   sizesQuantities: [SizeQuantity.schema]
 });
 
-// Interface for Product
 interface IWomenCategory extends Document {
   productName: string;
   productPrice: string;
@@ -37,7 +35,6 @@ interface IWomenCategory extends Document {
 
 }
 
-// Create and export the model
 const ProductCategory = mongoose.model<IWomenCategory>('Product', ProductSchema);
 
 export default ProductCategory;

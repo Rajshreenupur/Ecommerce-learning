@@ -28,7 +28,6 @@ const WomenWears: React.FC = () => {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        // console.log(data,"<<<<<<<<<<<<<<<<")
         const WomensProducts = data.filter(
           (product: Product) => product.category === "Womens"
         );
@@ -47,7 +46,6 @@ const WomenWears: React.FC = () => {
   const router = useRouter();
 
   const addToCard = (productID:any)=>{
-    // console.log(productID,"--------------------")
     AddCartItem(productID)
     router.push('/cart')
 

@@ -4,7 +4,6 @@ const getToken = () => {
   };
   
   export function PostProduct(formData: any) {
-    console.log(formData,"<>>><<LLLLLLLLLLLLLLLLLLLLLLL")
     let BaseUrl = "http://127.0.0.1:5000/products/create";
     const data = new FormData();
     data.append('category', formData.category);
@@ -67,7 +66,6 @@ const getToken = () => {
 
   export function EditProductDetails(editFormData:any,) {
     const editProductID=editFormData.id
-    console.log(editProductID,"kkkkkkkkkkkkkkkkkkk")
     
     let BaseUrl = `http://127.0.0.1:5000/products/update/${editProductID}`;
 

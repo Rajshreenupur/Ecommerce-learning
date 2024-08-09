@@ -1,4 +1,3 @@
-// routes/admin.routes.ts
 import { Router } from 'express';
 import { signUpAdmin,signInAdmin } from '../controllers/adminController';
 

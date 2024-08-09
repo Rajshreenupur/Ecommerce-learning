@@ -8,7 +8,6 @@ export const createProduct = async (
   const { category, productName, productPrice, description, sizesQuantities } =
     req.body;
   const productUrl = req.file ? `/uploads/${req.file.filename}` : "";
-  // console.log(typeof JSON.parse(sizesQuantities), "------->>>>");
   if (
     !category ||
     !productName ||

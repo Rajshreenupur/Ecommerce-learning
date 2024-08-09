@@ -7,19 +7,16 @@ import User from '../models/userModel';
 dotenv.config();
 
 const SALT_ROUNDS = 10;
-// const SECRET_KEY ="kjhgfcdxsxfcgvbhjkmmjnhgfvcdxfcgvbhjkmnhjbcfdxcfgvbhjnbhdxzsxcfgvbh";
 
 export const signUpUser = async (req: Request, res: Response): Promise<void> => {
 
   const { username,email, password } = req.body;
-// console.log(typeof req.body)
   if (!username||!email || !password) {
     res.status(400).json({ message: 'username,email and password are required' });
     return;
   }
 
   try {
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
     const newAdmin = new User({ username,email, password: hashedPassword });
@@ -48,7 +45,6 @@ export const signInUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    // Compare the provided password with the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {

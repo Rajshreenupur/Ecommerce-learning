@@ -26,7 +26,7 @@ const SignUp: React.FC = () => {
     e.preventDefault();
     try {
       const response = await UserSignUp(signUpData);
-      console.log("Signup successful:", response);
+      // console.log("Signup successful:", response);
         router.push("/signin");
       
     } catch (error) {

@@ -1,4 +1,3 @@
-// models/admin.model.ts
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface IAdmin extends Document {

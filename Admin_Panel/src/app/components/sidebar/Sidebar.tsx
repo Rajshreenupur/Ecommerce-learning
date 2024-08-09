@@ -1,4 +1,3 @@
-// Sidebar.tsx
 import { FC } from "react";
 
 const Sidebar: FC = () => {
