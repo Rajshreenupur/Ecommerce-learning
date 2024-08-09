@@ -78,15 +78,15 @@ const WomenWears: React.FC = () => {
             >
               <img
                 src={`http://localhost:5000${product.productUrl}`}
-                alt={product.name}
+                alt={product.productName}
                 width={400}
                 height={300}
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
-                <h2 className="text-xl font-bold mb-2">{product.name}</h2>
+                <h2 className="text-xl font-bold mb-2">{product.productName}</h2>
                 <p className="text-gray-700 mb-4">{product.description}</p>
-                <p className="text-xl font-bold">{product.price}</p>
+                <p className="text-xl font-bold">{product.productPrice}</p>
                 <button
                   className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
                   onClick={() => {addToCard(product._id)}}

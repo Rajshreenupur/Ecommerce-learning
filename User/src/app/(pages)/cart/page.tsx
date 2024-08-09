@@ -31,7 +31,7 @@ const Cart: React.FC = () => {
         setCartItems(response);
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch products. Please try again later.");
+        setError("No data");
         setLoading(false);
       }
     };
@@ -63,7 +63,7 @@ const Cart: React.FC = () => {
   const handleRemoveItem = (id: string) => {
     deleteCartItem(id);
   };
-
+console.log(cartItems,"<<<,,,,,,,")
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Navbar />
@@ -86,7 +86,7 @@ const Cart: React.FC = () => {
             <div>
               {cartItems.map((item) => (
                 <div
-                  key={item._id}
+                  key={item.productId._id}
                   className="flex items-center mb-6 border-b pb-4"
                 >
                   <div className="w-1/4">
@@ -128,7 +128,7 @@ const Cart: React.FC = () => {
                       ).toFixed(2)}
                     </p>
                     <button
-                      onClick={() => handleRemoveItem(item._id)}
+                      onClick={() => handleRemoveItem(item.productId._id)}
                       className="text-red-500 mt-2 underline"
                     >
                       Remove

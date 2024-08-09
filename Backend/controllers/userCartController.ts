@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
+import mongoose from 'mongoose'; // Import mongoose here
 import UserCart from "../models/userCartModel";
 import ProductCategory from "../models/productModel";
 
-// Add a cart item
-export const AddUserCart = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+// Add or Update a Cart Item
+export const AddUserCart = async (req: any, res: Response): Promise<void> => {
   const { productId, quantity } = req.body;
+  const userId = req.user?._id;
+
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
 
   try {
     const product = await ProductCategory.findById(productId);
@@ -16,55 +20,98 @@ export const AddUserCart = async (
       return;
     }
 
-    const cartItem = await UserCart.findOne({ productId });
+    let userCart = await UserCart.findOne({ userId });
 
-    if (cartItem) {
-      cartItem.quantity += quantity;
-      await cartItem.save();
-      res.json(cartItem);
+    if (userCart) {
+      const existingProduct = userCart.products.find(
+        (item) => item.productId.toString() === productId
+      );
+
+      if (existingProduct) {
+        existingProduct.quantity += quantity;
+      } else {
+        userCart.products.push({ productId, quantity });
+      }
+
+      await userCart.save();
+      res.json(userCart);
     } else {
-      const newCartItem = new UserCart({
-        productId,
-        quantity,
+      const newCart = new UserCart({
+        userId,
+        products: [{ productId, quantity }],
       });
-      await newCartItem.save();
-      res.status(201).json(newCartItem);
+
+      await newCart.save();
+      res.status(201).json(newCart);
     }
   } catch (error) {
-    res.status(400).json({ message: error });
+    res.status(500).json({ message: "An error occurred while adding the cart item.", error: error });
   }
 };
 
-// Get all cart items
-export const GetAllCartItem = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const cartItems = await UserCart.find().populate("productId");
-    res.json(cartItems);
-  } catch (error) {
-    res.status(500).json({ message: error });
+// Get All Cart Items for a User
+export const GetAllCartItem = async (req: any, res: Response): Promise<void> => {
+  const userId = req.user?._id;
+
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
   }
-};
-
-// Delete a cart item
-export const DeleteCartItem = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  const cartItemId = req.params.id;
 
   try {
-    const cartItem = await UserCart.findByIdAndDelete(cartItemId);
-console.log(cartItem)
-    if (!cartItem) {
-      res.status(404).json({ message: "Cart item not found" });
+    const userCart = await UserCart.findOne({ userId }).populate("products.productId");
+
+    if (!userCart || userCart.products.length === 0) {
+      res.status(404).json({ message: "No cart items found for this user" });
       return;
     }
 
-    res.status(200).json({ message: "Cart item deleted successfully" });
+    res.status(200).json(userCart.products);
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: "An error occurred while retrieving cart items.", error: error });
+  }
+};
+
+// Delete a Cart Item by Product ID
+export const deleteCartItem = async (req: any, res: any): Promise<void> => {
+  const userId = req.user?._id;
+  const productId = req.params.id; 
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      res.status(400).json({ message: "Invalid product ID" });
+      return;
+    }
+
+    const userCart = await UserCart.findOne({ userId });
+
+    if (!userCart) {
+      res.status(404).json({ message: "Cart not found" });
+      return;
+    }
+
+    
+
+    const productIndex = userCart.products.findIndex(
+      (item) => item.productId._id.toString() === productId
+    );
+
+    if (productIndex === -1) {
+      res.status(404).json({ message: "Product not found in cart" });
+      return;
+    }
+
+    userCart.products.splice(productIndex, 1);
+
+    await userCart.save();
+
+    res.status(200).json({ message: "Cart item deleted successfully", cart: userCart });
+  } catch (error) {
+    console.error("Error deleting cart item:", error);
+    res.status(500).json({ message: "An error occurred while deleting the cart item.", error: error });
   }
 };
