@@ -3,6 +3,9 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/app/components/navbar";
 import { deleteCartItem, getAllProduct } from "@/app/services/productsApi";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("pk_test_51PmrhwCldrJn4TuGDQazIvW7oNHiKRZ0YRy6XEz203sjPl9pKmdPPVfSwR5KgqOp9lFyuiot5L7zH4bCRULyHk4k00cc2MXzmH");
 
 interface Product {
   _id: string;
@@ -154,6 +157,43 @@ const Cart: React.FC = () => {
     }
   };
 
+
+
+  const handleCheckoutWithStripe = async () => {
+    const totalAmount = calculateTotal();
+    const amountInPaise = Math.round(parseFloat(totalAmount) * 100); // Convert to paise
+  
+    try {
+      const response = await fetch("http://localhost:5000/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: amountInPaise }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to create checkout session");
+      }
+  
+      const { sessionId } = await response.json();
+  
+      const stripe = await stripePromise;
+      if (stripe) {
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+        if (error) {
+          console.error("Stripe Checkout Error:", error);
+          alert("Failed to redirect to checkout.");
+        }
+      }
+    } catch (err) {
+      console.error("Error during checkout:", err);
+      alert("Failed to create checkout session. Please try again later.");
+    }
+  };
+  
+  
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Navbar />
@@ -226,6 +266,12 @@ const Cart: React.FC = () => {
               <p className="text-xl font-bold">
                 Grand Total: ₹{calculateTotal()}
               </p>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={handleCheckoutWithStripe}
+              >
+                Stripe Payment
+              </button>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded"
                 onClick={handleCheckout}

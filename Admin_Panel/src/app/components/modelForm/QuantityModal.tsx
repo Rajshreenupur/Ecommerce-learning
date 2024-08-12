@@ -1,4 +1,3 @@
-// QuantityModal.tsx
 
 import React, { FC, useState } from "react";
 

@@ -1,7 +1,5 @@
-// EditFormData.tsx
 import React from 'react';
 
-// Define the type for the editFormData
 interface EditFormDataProps {
   editFormData: {
     name: string;

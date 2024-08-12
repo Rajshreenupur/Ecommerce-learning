@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Define the type for the formData
 interface FormData {
   name: string;
   price: string;
@@ -9,7 +8,6 @@ interface FormData {
   image: File | null; 
 }
 
-// Define the type for the props
 interface CreateProductFormProps {
   formData: FormData;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
