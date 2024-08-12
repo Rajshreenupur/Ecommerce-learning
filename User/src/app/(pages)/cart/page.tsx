@@ -5,8 +5,6 @@ import Navbar from "@/app/components/navbar";
 import { deleteCartItem, getAllProduct } from "@/app/services/productsApi";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("pk_test_51PmrhwCldrJn4TuGDQazIvW7oNHiKRZ0YRy6XEz203sjPl9pKmdPPVfSwR5KgqOp9lFyuiot5L7zH4bCRULyHk4k00cc2MXzmH");
-
 interface Product {
   _id: string;
   productId: {
@@ -24,6 +22,7 @@ const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,7 +69,10 @@ const Cart: React.FC = () => {
     }
   };
 
+
+
   const handleCheckout = async () => {
+
     const totalAmount = calculateTotal();
     const amountInPaise = Math.round(parseFloat(totalAmount) * 100); // Convert to paise
 
@@ -102,7 +104,7 @@ const Cart: React.FC = () => {
           name: "MyEcommerce",
           description: "Purchase Description",
           image: "https://your-logo-url.com",
-          order_id: orderId, 
+          order_id: orderId,
           handler: function (response: any) {
             console.log("Payment Successful: ", response);
             fetch("http://localhost:5000/verify-payment", {
@@ -120,7 +122,9 @@ const Cart: React.FC = () => {
             })
               .then((res) => res.json())
               .then((data) => {
-                if (data.message === "Payment verified and saved successfully") {
+                if (
+                  data.message === "Payment verified and saved successfully"
+                ) {
                   alert("Payment verified and saved successfully!");
                 } else {
                   alert("Payment verification failed!");
@@ -157,27 +161,28 @@ const Cart: React.FC = () => {
     }
   };
 
-
-
   const handleCheckoutWithStripe = async () => {
     const totalAmount = calculateTotal();
     const amountInPaise = Math.round(parseFloat(totalAmount) * 100); // Convert to paise
-  
+
     try {
-      const response = await fetch("http://localhost:5000/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ amount: amountInPaise }),
-      });
-  
+      const response = await fetch(
+        "http://localhost:5000/create-checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount: amountInPaise }),
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to create checkout session");
       }
-  
+
       const { sessionId } = await response.json();
-  
+
       const stripe = await stripePromise;
       if (stripe) {
         const { error } = await stripe.redirectToCheckout({ sessionId });
@@ -191,8 +196,6 @@ const Cart: React.FC = () => {
       alert("Failed to create checkout session. Please try again later.");
     }
   };
-  
-  
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -233,7 +236,8 @@ const Cart: React.FC = () => {
                       {item.productId.productName}
                     </h3>
                     <p className="text-gray-700">
-                      Price: ₹{parseFloat(item.productId.productPrice).toFixed(2)}
+                      Price: ₹
+                      {parseFloat(item.productId.productPrice).toFixed(2)}
                     </p>
                     <div className="flex items-center mt-2">
                       <label className="mr-2">Quantity:</label>
@@ -242,13 +246,19 @@ const Cart: React.FC = () => {
                         min="1"
                         value={item.quantity}
                         onChange={(e) =>
-                          handleQuantityChange(item._id, parseInt(e.target.value))
+                          handleQuantityChange(
+                            item._id,
+                            parseInt(e.target.value)
+                          )
                         }
                         className="border rounded p-1 w-16"
                       />
                     </div>
                     <p className="mt-2 font-bold">
-                      Total: ₹{(parseFloat(item.productId.productPrice) * item.quantity).toFixed(2)}
+                      Total: ₹
+                      {(
+                        parseFloat(item.productId.productPrice) * item.quantity
+                      ).toFixed(2)}
                     </p>
                     <button
                       onClick={() => handleRemoveItem(item._id)}
