@@ -8,6 +8,7 @@ import Razorpay from "razorpay";
 import Payment from "./models/paymentModel";
 import cors from "cors";
 import crypto from "crypto"; 
+import Stripe from "stripe";
 
 dotenv.config();
 
@@ -25,6 +26,42 @@ app.use("/user", userRoutes);
 app.get("/items", (req: Request, res: Response) => {
   res.json({ message: "Get all items" });
 });
+
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2024-06-20',
+});
+app.post("/create-checkout-session", async (req: Request, res: Response) => {
+  try {
+    const { amount } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            product_data: {
+              name: "Your Product Name",
+            },
+            unit_amount: amount, 
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: "http://localhost:3000/success", 
+      cancel_url: "http://localhost:3000/cancel", 
+    });
+
+    res.json({ sessionId: session.id });
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).json({ message: "Error creating checkout session" });
+  }
+});
+
+
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
