@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 import UserCart from "../models/userCartModel";
 import ProductCategory from "../models/productModel";
 
+
+
+//add to cart
 export const AddUserCart = async (req: any, res: Response): Promise<void> => {
   const { productId, quantity } = req.body;
   const userId = req.user?._id;
@@ -48,6 +51,8 @@ export const AddUserCart = async (req: any, res: Response): Promise<void> => {
   }
 };
 
+
+//get all cart item
 export const GetAllCartItem = async (req: any, res: Response): Promise<void> => {
   const userId = req.user?._id;
 
@@ -70,6 +75,8 @@ export const GetAllCartItem = async (req: any, res: Response): Promise<void> => 
   }
 };
 
+
+//delete cart item
 export const deleteCartItem = async (req: any, res: any): Promise<void> => {
   const userId = req.user?._id;
   const productId = req.params.id; 
@@ -112,3 +119,34 @@ export const deleteCartItem = async (req: any, res: any): Promise<void> => {
     res.status(500).json({ message: "An error occurred while deleting the cart item.", error: error });
   }
 };
+
+
+// Clear all cart items
+export const clearCart = async (req: any, res: Response): Promise<void> => {
+  const userId = req.user?._id;
+
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  try {
+    const userCart = await UserCart.findOne({ userId });
+
+    if (!userCart) {
+      res.status(404).json({ message: "Cart not found" });
+      return;
+    }
+
+    userCart.products = [];
+
+    await userCart.save();
+
+    res.status(200).json({ message: "All cart items have been removed", cart: userCart });
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    res.status(500).json({ message: "An error occurred while clearing the cart.", error: error });
+  }
+};
+
+

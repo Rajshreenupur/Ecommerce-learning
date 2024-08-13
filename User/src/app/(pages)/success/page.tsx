@@ -1,6 +1,11 @@
+"use client"
+import { clearCartItem } from '@/app/services/productsApi';
 import React from 'react'
 
-const paymentSuccess = () => {
+const paymentSuccess: React.FC= () => {
+
+  clearCartItem();
+
   return (
     <div>Payment Successful</div>
   )

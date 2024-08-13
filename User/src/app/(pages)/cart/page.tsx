@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Navbar from "@/app/components/navbar";
-import { deleteCartItem, getAllProduct } from "@/app/services/productsApi";
+import { clearCartItem, deleteCartItem, getAllProduct } from "@/app/services/productsApi";
 import { loadStripe } from "@stripe/stripe-js";
 
 interface Product {
@@ -70,8 +70,7 @@ const Cart: React.FC = () => {
   };
 
 
-
-  const handleCheckout = async () => {
+  const handleCheckoutWithRazorpay = async () => {
 
     const totalAmount = calculateTotal();
     const amountInPaise = Math.round(parseFloat(totalAmount) * 100); // Convert to paise
@@ -125,6 +124,7 @@ const Cart: React.FC = () => {
                 if (
                   data.message === "Payment verified and saved successfully"
                 ) {
+                  clearCartItem();
                   alert("Payment verified and saved successfully!");
                 } else {
                   alert("Payment verification failed!");
@@ -155,6 +155,7 @@ const Cart: React.FC = () => {
         console.error("Razorpay SDK failed to load. Are you online?");
         alert("Failed to load Razorpay SDK. Please try again later.");
       };
+
     } catch (err) {
       console.error("Error during checkout:", err);
       alert("Failed to create order. Please try again later.");
@@ -219,7 +220,7 @@ const Cart: React.FC = () => {
             <div>
               {cartItems.map((item) => (
                 <div
-                  key={item._id}
+                  key={item.productId._id}
                   className="flex items-center mb-6 border-b pb-4"
                 >
                   <div className="w-1/4">
@@ -247,7 +248,7 @@ const Cart: React.FC = () => {
                         value={item.quantity}
                         onChange={(e) =>
                           handleQuantityChange(
-                            item._id,
+                            item.productId._id,
                             parseInt(e.target.value)
                           )
                         }
@@ -261,7 +262,7 @@ const Cart: React.FC = () => {
                       ).toFixed(2)}
                     </p>
                     <button
-                      onClick={() => handleRemoveItem(item._id)}
+                      onClick={() => handleRemoveItem(item.productId._id)}
                       className="text-red-500 mt-2 underline"
                     >
                       Remove
@@ -284,7 +285,7 @@ const Cart: React.FC = () => {
               </button>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={handleCheckout}
+                onClick={handleCheckoutWithRazorpay}
               >
                 Proceed to Checkout
               </button>

@@ -49,3 +49,19 @@ export function deleteCartItem(cartItemId: any) {
         throw error;
     });
 }
+
+
+
+export function clearCartItem() {
+    const config = {
+        headers: { Authorization: getToken() }
+    };
+
+    const BaseUrl = "http://127.0.0.1:5000/user/clearCart";
+    return axios.delete(BaseUrl, config).then((response) => {
+        return response.data;
+    }).catch((error) => {
+        console.error("Error in clearCartItem:", error.response ? error.response.data : error.message);
+        throw error;
+    });
+}
