@@ -3,34 +3,39 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { UserSignUp } from '@/app/services/authApi';
+import { UserSignUp, signUpWithGoogle } from '@/app/services/authApi';
 
 const SignUp: React.FC = () => {
-  
-  const router =useRouter();
-  const [signUpData , setSignUpData] = useState({
-    username : "",
-    email:"",
-    password:""
-  })
+  const router = useRouter();
+  const [signUpData, setSignUpData] = useState({
+    username: "",
+    email: "",
+    password: ""
+  });
 
-  const handleChange =(e:any)=>{
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignUpData({
       ...signUpData,
-      [e.target.name] : e.target.value
-    })
+      [e.target.name]: e.target.value
+    });
+  };
 
-  }
-
-  const handleSignUpSubmit = async (e: any) => {
+  const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await UserSignUp(signUpData);
-      // console.log("Signup successful:", response);
-        router.push("/signin");
-      
+      router.push("/signin");
     } catch (error) {
       console.error("Signup failed:", error);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      await signUpWithGoogle();
+      router.push("/");
+    } catch (error) {
+      console.error("Google Sign-Up failed:", error);
     }
   };
 
@@ -42,12 +47,8 @@ const SignUp: React.FC = () => {
       <div className="w-full max-w-md">
         <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-          
           <div className="mb-4">
-            <label
-              htmlFor="username"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
+            <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
               Username
             </label>
             <input
@@ -60,12 +61,8 @@ const SignUp: React.FC = () => {
               placeholder="Enter your username"
             />
           </div>
-
           <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
+            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
               Email
             </label>
             <input
@@ -78,12 +75,8 @@ const SignUp: React.FC = () => {
               placeholder="Enter your email"
             />
           </div>
-          
           <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
+            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
               Password
             </label>
             <input
@@ -96,7 +89,6 @@ const SignUp: React.FC = () => {
               placeholder="Enter your password"
             />
           </div>
-          
           <div className="flex items-center justify-between">
             <button
               type="submit"
@@ -106,12 +98,17 @@ const SignUp: React.FC = () => {
               Sign Up
             </button>
           </div>
-          
+          <div className="flex items-center justify-center mt-4">
+            <button
+              type="button"
+              onClick={handleGoogleSignUp}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Sign Up with Google
+            </button>
+          </div>
           <p className="text-center text-gray-600 text-sm mt-4">
-            Already have an account?{' '}
-            <Link href="/signin" className="text-blue-500 hover:text-blue-700">
-              Sign In
-            </Link>
+            Already have an account? <Link href="/signin" className="text-blue-500 hover:text-blue-700">Sign In</Link>
           </p>
         </form>
       </div>
